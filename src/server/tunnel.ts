@@ -23,9 +23,40 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+const getAllTunnels = () => {
+  return Array.from(tunnels.values());
+};
+
+const closeTunnel = (subdomain: string) => {
+  if (tunnels.has(subdomain)) {
+    tunnels.delete(subdomain);
+  }
+};
+
+const closeAllTunnels = () => {
+  tunnels.clear();
+};
+
+const getSelectObjectKeysFromMap = (map: Map<string, any>, keys: string[]) => {
+  return Array.from(map).map(([key, value]) => {
+    return {
+      key,
+      ...keys.reduce((acc:any, k) => {
+        acc[k] = value[k];
+        return acc;
+      }, {})
+    };
+  });
+};
+
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'healthy', tunnelsSize: tunnels.size, tunnels: tunnels.entries() });
+  res.json({ status: 'healthy', tunnelsSize: tunnels.size, tunnels: getSelectObjectKeysFromMap(tunnels, ['subdomain', 'targetUrl']) });
+});
+
+app.get('/remove-tunnels', (req, res) => {
+  closeAllTunnels();
+  res.json({ status: 'removed'});
 });
 
 // Client registration endpoint
@@ -84,7 +115,7 @@ app.use('/', async (req, res, next) => {
   
   // Extract subdomain from the public domain
   const subdomain = host?.replace(`.${CONSTANTS.PUBLIC_DOMAIN}`, '').split(':')[0];
-  console.log('Subdomain:', subdomain, tunnels.entries());
+  console.log('Subdomain:', subdomain);
 
   if (!subdomain || !tunnels.has(subdomain)) {
     return res.status(404).send('Tunnel not found');
