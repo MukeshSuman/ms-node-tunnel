@@ -1,7 +1,12 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server as WebSocketServer } from 'ws';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import { createProxyMiddleware, debugProxyErrorsPlugin, loggerPlugin, errorResponsePlugin, proxyEventsPlugin } from 'http-proxy-middleware';
+// debugProxyErrorsPlugin, // subscribe to proxy errors to prevent server from crashing
+//   loggerPlugin, // log proxy events to a logger (ie. console)
+//   errorResponsePlugin, // return 5xx response on proxy error
+//   proxyEventsPlugin, // implements the "on:" option
+
 import dotenv from 'dotenv';
 import { TunnelInfo } from './types';
 import { CONSTANTS } from '../constants';
@@ -131,6 +136,8 @@ app.use('/', async (req, res, next) => {
     target: tunnel.targetUrl,
     ws: true,
     changeOrigin: true,
+    logger: console,
+    plugins: [debugProxyErrorsPlugin, loggerPlugin, errorResponsePlugin, proxyEventsPlugin],
     // onError: (err, req, res) => {
     //   console.error('Proxy error:', err);
     //   res.writeHead(502, { 'Content-Type': 'text/plain' });
