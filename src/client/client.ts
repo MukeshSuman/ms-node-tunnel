@@ -2,6 +2,7 @@ import WebSocket from 'ws';
 import axios from 'axios';
 import dotenv from 'dotenv';
 import { TunnelConfig } from '../server/types';
+import { CONSTANTS } from '../constants';
 
 dotenv.config();
 
@@ -19,8 +20,8 @@ class TunnelClient {
     try {
       console.log('Registering with tunnel server...');
       
-      // Register with tunnel server
-      const response = await axios.post(`http://${this.config.serverHost}/register`, {
+      // Register with tunnel server using the tunnel subdomain
+      const response = await axios.post(`https://${CONSTANTS.TUNNEL_DOMAIN}/register`, {
         subdomain: this.config.subdomain,
         targetUrl: `http://localhost:${this.config.localPort}`
       });
@@ -32,7 +33,7 @@ class TunnelClient {
 
       this.ws.on('open', () => {
         console.log(`✓ Tunnel established successfully!`);
-        console.log(`✓ Your local app is now available at: http://${this.config.subdomain}.${this.config.serverHost}`);
+        console.log(`✓ Your local app is now available at: ${response.data.publicUrl}`);
         this.reconnectAttempts = 0;
       });
 

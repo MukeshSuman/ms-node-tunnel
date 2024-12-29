@@ -11,4 +11,6 @@ export const CONSTANTS = {
   TUNNEL_SERVER_PORT: process.env.TUNNEL_SERVER_PORT || process.env.PORT || 3003,
   CLIENT_SERVER_PORT: process.env.CLIENT_SERVER_PORT || process.env.PORT || 3004,
   SERVER_HOST: process.env.SERVER_HOST || 'localhost:3001',
+  TUNNEL_DOMAIN: process.env.TUNNEL_DOMAIN || 'tunnel.mydomain.com',
+  PUBLIC_DOMAIN: process.env.PUBLIC_DOMAIN || 'mydomain.com',
 };

@@ -1,4 +1,4 @@
-import express, { Response } from 'express';
+import express from 'express';
 import { createServer } from 'http';
 import { Server as WebSocketServer } from 'ws';
 import { createProxyMiddleware } from 'http-proxy-middleware';
@@ -37,9 +37,15 @@ app.post('/register', (req:any, res:any) => {
   }
 
   tunnels.set(subdomain, { subdomain, targetUrl });
+  
+  // Generate WebSocket URL using the tunnel subdomain
+  const wsProtocol = process.env.NODE_ENV === 'production' ? 'wss' : 'ws';
+  const connectUrl = `${wsProtocol}://${CONSTANTS.TUNNEL_DOMAIN}/connect/${subdomain}`;
+  
   res.json({ 
-    message: 'Registered successfully', 
-    connectUrl: `ws://${process.env.SERVER_HOST}/connect/${subdomain}` 
+    message: 'Registered successfully',
+    connectUrl,
+    publicUrl: `https://${subdomain}.${CONSTANTS.PUBLIC_DOMAIN}`
   });
 });
 
@@ -66,10 +72,17 @@ wss.on('connection', (ws: any, req) => {
   });
 });
 
-// Proxy middleware for handling tunnel requests
-app.use('/', (req: any, res: any, next) => {
+// Main proxy handler
+app.use('/', async (req, res, next) => {
   const host = req.headers.host;
-  const subdomain = host?.split('.')[0];
+  
+  // Skip if this is the tunnel domain itself
+  if (host === CONSTANTS.TUNNEL_DOMAIN) {
+    return next();
+  }
+  
+  // Extract subdomain from the public domain
+  const subdomain = host?.replace(`.${CONSTANTS.PUBLIC_DOMAIN}`, '');
 
   if (!subdomain || !tunnels.has(subdomain)) {
     return res.status(404).send('Tunnel not found');
@@ -85,7 +98,7 @@ app.use('/', (req: any, res: any, next) => {
     target: tunnel.targetUrl,
     ws: true,
     changeOrigin: true,
-    // onError: (err:any, req:any, res:any) => {
+    // onError: (err, req, res) => {
     //   console.error('Proxy error:', err);
     //   res.writeHead(502, { 'Content-Type': 'text/plain' });
     //   res.end('Proxy error: Unable to connect to local service');
@@ -98,4 +111,5 @@ app.use('/', (req: any, res: any, next) => {
 const PORT = CONSTANTS.TUNNEL_SERVER_PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Tunnel server running on port ${PORT}`);
+  console.log(`Tunnel service available at: ${CONSTANTS.TUNNEL_DOMAIN}`);
 });
