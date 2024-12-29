@@ -25,7 +25,7 @@ app.use(express.json());
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'healthy', tunnels: tunnels.size });
+  res.json({ status: 'healthy', tunnelsSize: tunnels.size, tunnels: tunnels.entries() });
 });
 
 // Client registration endpoint
@@ -75,6 +75,7 @@ wss.on('connection', (ws: any, req) => {
 // Main proxy handler
 app.use('/', async (req, res, next) => {
   const host = req.headers.host;
+  console.log('Host:', host);
   
   // Skip if this is the tunnel domain itself
   // if (host === CONSTANTS.TUNNEL_DOMAIN) {
@@ -82,7 +83,8 @@ app.use('/', async (req, res, next) => {
   // }
   
   // Extract subdomain from the public domain
-  const subdomain = host?.replace(`.${CONSTANTS.PUBLIC_DOMAIN}`, '');
+  const subdomain = host?.replace(`.${CONSTANTS.PUBLIC_DOMAIN}`, '').split(':')[0];
+  console.log('Subdomain:', subdomain, tunnels.entries());
 
   if (!subdomain || !tunnels.has(subdomain)) {
     return res.status(404).send('Tunnel not found');
