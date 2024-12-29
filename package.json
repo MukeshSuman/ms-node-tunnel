@@ -7,8 +7,13 @@
     "build": "tsc",
     "lint": "eslint 'src/**/*.{js,ts}'",
     "format": "prettier --write 'src/**/*.{js,ts}'",
-    "dev-client": "ts-node-dev src/localClient.ts",
-    "dev-server": "ts-node-dev src/relayServer.ts"
+    "dev-client": "ts-node-dev src/client.ts",
+    "dev-server": "ts-node-dev src/tunnel.ts",
+    "tunnel": "node dist/server/tunnel.js",
+    "client": "node dist/client/client.js",
+    "dev:tunnel": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/tunnel.ts",
+    "dev:client": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/client/client.ts",
+    "clean": "rimraf dist"
   },
   "keywords": [],
   "author": "",
@@ -26,11 +31,19 @@
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.4.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "@types/express": "^4.17.21",
+    "nodemon": "^3.0.3",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
+    "@types/express": "^5.0.0",
+    "axios": "^1.7.9",
     "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "http-proxy": "^1.18.1",
+    "http-proxy-middleware": "^3.0.3",
     "ws": "^8.18.0"
   }
 }
