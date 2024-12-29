@@ -77,9 +77,9 @@ app.use('/', async (req, res, next) => {
   const host = req.headers.host;
   
   // Skip if this is the tunnel domain itself
-  if (host === CONSTANTS.TUNNEL_DOMAIN) {
-    return next();
-  }
+  // if (host === CONSTANTS.TUNNEL_DOMAIN) {
+  //   return next();
+  // }
   
   // Extract subdomain from the public domain
   const subdomain = host?.replace(`.${CONSTANTS.PUBLIC_DOMAIN}`, '');
