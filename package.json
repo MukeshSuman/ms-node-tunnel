@@ -9,8 +9,8 @@
     "format": "prettier --write 'src/**/*.{js,ts}'",
     "dev-client": "ts-node-dev src/client.ts",
     "dev-server": "ts-node-dev src/tunnel.ts",
-    "tunnel": "node dist/server/tunnel.js",
-    "client": "node dist/client/client.js",
+    "tunnel": "node dist/server/relayServer.js",
+    "client": "node dist/client/localClient.js",
     "dev:tunnel": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/tunnel.ts",
     "dev:client": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/client/client.ts",
     "clean": "rimraf dist"
