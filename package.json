@@ -9,10 +9,10 @@
     "format": "prettier --write 'src/**/*.{js,ts}'",
     "dev-client": "ts-node-dev src/client.ts",
     "dev-server": "ts-node-dev src/tunnel.ts",
-    "tunnel": "node dist/server/relayServer.js",
-    "client": "node dist/client/localClient.js",
-    "dev:tunnel": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/tunnel.ts",
-    "dev:client": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/client/client.ts",
+    "tunnel": "node dist/server/tunnel-server.js",
+    "client": "node dist/client/tunnel-client.js",
+    "dev:tunnel": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/tunnel-server.ts",
+    "dev:client": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/client/tunnel-client.ts",
     "clean": "rimraf dist"
   },
   "keywords": [],
@@ -21,6 +21,7 @@
   "description": "",
   "devDependencies": {
     "@types/dotenv": "^8.2.3",
+    "@types/express": "^4.17.21",
     "@types/http-proxy": "^1.17.15",
     "@types/node": "^22.10.2",
     "@types/ws": "^8.5.13",
@@ -29,13 +30,12 @@
     "eslint": "^9.17.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "prettier": "^3.4.2",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.7.2",
-    "@types/express": "^4.17.21",
     "nodemon": "^3.0.3",
+    "prettier": "^3.4.2",
     "rimraf": "^5.0.5",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.2"
   },
   "dependencies": {
     "@types/express": "^5.0.0",
@@ -44,6 +44,8 @@
     "express": "^4.21.2",
     "http-proxy": "^1.18.1",
     "http-proxy-middleware": "^3.0.3",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "ws": "^8.18.0"
   }
 }

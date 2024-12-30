@@ -21,7 +21,7 @@ class TunnelClient {
       console.log('Registering with tunnel server...');
       
       // Register with tunnel server using the tunnel subdomain
-      const response = await axios.post(`https://${CONSTANTS.TUNNEL_DOMAIN}/register`, {
+      const response = await axios.post(`http://${CONSTANTS.TUNNEL_DOMAIN}/register`, {
         subdomain: this.config.subdomain,
         targetUrl: `http://localhost:${this.config.localPort}`
       });
@@ -67,9 +67,9 @@ class TunnelClient {
 
 // Get configuration from environment variables or use defaults
 const config: TunnelConfig = {
-  subdomain: process.env.TUNNEL_SUBDOMAIN || 'myapp',
-  localPort: parseInt(process.env.LOCAL_PORT || '3000'),
-  serverHost: process.env.SERVER_HOST || 'localhost:3001'
+  subdomain: CONSTANTS.TUNNEL_SUBDOMAIN || 'myapp',
+  localPort: parseInt(CONSTANTS.LOCAL_PORT || '3000'),
+  serverHost: CONSTANTS.SERVER_HOST || 'localhost:3001'
 };
 
 console.log('Starting tunnel client with configuration:', config);
